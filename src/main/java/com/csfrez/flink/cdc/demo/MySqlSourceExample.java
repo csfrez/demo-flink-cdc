@@ -5,7 +5,9 @@ import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
 import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
 import com.csfrez.flink.cdc.bean.BinlogBean;
 import com.csfrez.flink.cdc.debezium.JsonDebeziumDeserializationSchema;
+import com.csfrez.flink.cdc.function.BinlogFilterFunction;
 import com.csfrez.flink.cdc.function.BinlogProcessFunction;
+import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -33,10 +35,14 @@ public class MySqlSourceExample {
 
             StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-            DataStreamSource<String> dataStreamSource = env.addSource(sourceFunction);
-            SingleOutputStreamOperator<BinlogBean> singleOutputStreamOperator = dataStreamSource.process(new BinlogProcessFunction());
+            DataStream<String> dataStream = env.addSource(sourceFunction);
+            DataStream<String> filterDataStream = dataStream.filter(new BinlogFilterFunction());
 
-            singleOutputStreamOperator.print();
+            filterDataStream.print();
+
+            //SingleOutputStreamOperator<BinlogBean> singleOutputStreamOperator = dataStream.process(new BinlogProcessFunction());
+
+            //singleOutputStreamOperator.print();
 
             //env.addSource(sourceFunction).print().setParallelism(1);
             // use parallelism 1 for sink to keep message ordering

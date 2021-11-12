@@ -1,0 +1,18 @@
+{
+    "mydb.orders": {
+        "connection": "one",
+        "columns": "order_id,order_date,customer_name,price,product_id,order_status"
+    },
+    "mydb.products": {
+        "connection": "one",
+        "columns": "id,name,description"
+    },
+    "mydb.shipments": {
+        "connection": "two",
+        "columns": "shipment_id,order_id,origin,destination,is_arrived"
+    },
+    "mydb.enriched_orders": {
+        "connection": "two",
+        "columns": "order_id,order_date,customer_name,price,product_id,order_status,name,description,shipment_id,origin,destination,is_arrived"
+    }
+}

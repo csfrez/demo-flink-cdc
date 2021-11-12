@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -38,14 +39,26 @@ public class DruidConfig {
 
     private String password;
 
+    private DruidConfig(){
+
+    }
 
     static {
+        InputStream in = null;
         try {
             String path = DruidConfig.class.getClassLoader().getResource(CONFIG_FILE).getPath();
-            InputStream in = new FileInputStream(path);
+            in = new FileInputStream(path);
             properties.load(in);
         } catch (Exception e) {
             log.error("initDruidConfig()", e);
+        } finally {
+            if(in != null){
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    log.error("initDruidConfig.IOException", e);
+                }
+            }
         }
     }
 
