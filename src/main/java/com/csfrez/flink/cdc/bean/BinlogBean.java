@@ -41,6 +41,10 @@ public class BinlogBean {
 
     }
 
+    public static BinlogBean builder(String json){
+        return JSONObject.parseObject(json, BinlogBean.class);
+    }
+
 }
 
 

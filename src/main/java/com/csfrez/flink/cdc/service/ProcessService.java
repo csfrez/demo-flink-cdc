@@ -1,10 +1,10 @@
 package com.csfrez.flink.cdc.service;
 
-import com.alibaba.fastjson.JSONObject;
-import com.csfrez.flink.cdc.bean.BinlogBean;
+import com.csfrez.flink.cdc.bean.BaseBean;
+import com.csfrez.flink.cdc.bean.StatementBean;
 
 public interface ProcessService {
 
-    void process(JSONObject before, JSONObject after, BinlogBean.Source source);
+    StatementBean process(String name, String operationType, BaseBean baseBean);
 
 }

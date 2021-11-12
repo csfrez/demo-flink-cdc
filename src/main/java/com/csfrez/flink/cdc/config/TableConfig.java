@@ -21,8 +21,10 @@ public class TableConfig {
 
     private static Map<String, TableConfig> tableConfigMap = new ConcurrentHashMap<>();
 
-    private String connection;
+    private String dataSourceName;
     private String columns;
+    private String beanReference;
+    private String relateTables;
 
     private TableConfig(){
 

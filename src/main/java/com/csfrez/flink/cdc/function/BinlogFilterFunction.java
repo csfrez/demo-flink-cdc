@@ -11,7 +11,8 @@ public class BinlogFilterFunction implements FilterFunction<String> {
 
     @Override
     public boolean filter(String value) throws Exception {
-        BinlogBean binlogBean = JSONObject.parseObject(value, BinlogBean.class);
+        System.out.println(Thread.currentThread().getName() + value);
+        BinlogBean binlogBean = BinlogBean.builder(value);
         BinlogBean.Source source = binlogBean.getSource();
         String name = source.getDb() + "." + source.getTable();
         Map<String, TableConfig> tableConfig = TableConfig.getTableConfig();

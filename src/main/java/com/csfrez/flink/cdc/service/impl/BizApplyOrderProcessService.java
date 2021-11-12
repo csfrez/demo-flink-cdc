@@ -1,7 +1,9 @@
 package com.csfrez.flink.cdc.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.csfrez.flink.cdc.bean.BaseBean;
 import com.csfrez.flink.cdc.bean.BinlogBean;
+import com.csfrez.flink.cdc.bean.StatementBean;
 import com.csfrez.flink.cdc.service.ProcessService;
 
 /**
@@ -12,8 +14,7 @@ import com.csfrez.flink.cdc.service.ProcessService;
 public class BizApplyOrderProcessService implements ProcessService {
 
     @Override
-    public void process(JSONObject before, JSONObject after, BinlogBean.Source source) {
-        System.out.println(before);
-        System.out.println(after);
+    public StatementBean process(String name, String operationType, BaseBean baseBean) {
+        return null;
     }
 }

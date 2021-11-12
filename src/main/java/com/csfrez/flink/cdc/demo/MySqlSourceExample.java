@@ -3,10 +3,14 @@ package com.csfrez.flink.cdc.demo;
 import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
 import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
 import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
+import com.csfrez.flink.cdc.bean.BaseBean;
 import com.csfrez.flink.cdc.bean.BinlogBean;
+import com.csfrez.flink.cdc.bean.StatementBean;
 import com.csfrez.flink.cdc.debezium.JsonDebeziumDeserializationSchema;
 import com.csfrez.flink.cdc.function.BinlogFilterFunction;
+import com.csfrez.flink.cdc.function.BinlogFlatMapFunction;
 import com.csfrez.flink.cdc.function.BinlogProcessFunction;
+import com.csfrez.flink.cdc.sink.MySqlJdbcSink;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
@@ -38,11 +42,15 @@ public class MySqlSourceExample {
             DataStream<String> dataStream = env.addSource(sourceFunction);
             DataStream<String> filterDataStream = dataStream.filter(new BinlogFilterFunction());
 
-            filterDataStream.print();
+            DataStream<StatementBean> flatMapDataStream = filterDataStream.flatMap(new BinlogFlatMapFunction());
 
-            //SingleOutputStreamOperator<BinlogBean> singleOutputStreamOperator = dataStream.process(new BinlogProcessFunction());
+            flatMapDataStream.print();
+            flatMapDataStream.addSink(new MySqlJdbcSink());
 
-            //singleOutputStreamOperator.print();
+//            SingleOutputStreamOperator<BinlogBean> singleOutputStreamOperator = filterDataStream.process(new BinlogProcessFunction());
+//            singleOutputStreamOperator.addSink()
+//            singleOutputStreamOperator.print();
+
 
             //env.addSource(sourceFunction).print().setParallelism(1);
             // use parallelism 1 for sink to keep message ordering
