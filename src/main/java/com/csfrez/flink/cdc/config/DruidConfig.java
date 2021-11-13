@@ -46,8 +46,9 @@ public class DruidConfig {
     static {
         InputStream in = null;
         try {
-            String path = DruidConfig.class.getClassLoader().getResource(CONFIG_FILE).getPath();
-            in = new FileInputStream(path);
+//            String path = DruidConfig.class.getClassLoader().getResource(CONFIG_FILE).getPath();
+//            in = new FileInputStream(path);
+            in = DruidConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILE);
             properties.load(in);
         } catch (Exception e) {
             log.error("initDruidConfig()", e);

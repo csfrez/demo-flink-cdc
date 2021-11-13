@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.util.Map;
@@ -38,8 +39,10 @@ public class TableConfig {
 
     static {
         try {
-            String path = DruidConfig.class.getClassLoader().getResource(CONFIG_FILE).getPath();
-            String json = FileUtils.readFileToString(new File(path), "UTF-8");
+            InputStream inputStream = DruidConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILE);
+            String json = IOUtils.toString(inputStream, "UTF-8");
+//            String path = DruidConfig.class.getClassLoader().getResource(CONFIG_FILE).getPath();
+//            String json = FileUtils.readFileToString(new File(path), "UTF-8");
             System.out.println(json);
             JSONObject jsonObject = JSONObject.parseObject(json);
             Set<String> keySet = jsonObject.keySet();
