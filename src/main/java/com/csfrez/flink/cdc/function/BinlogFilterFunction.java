@@ -19,10 +19,10 @@ public class BinlogFilterFunction implements FilterFunction<String> {
             BinlogBean.Source source = binlogBean.getSource();
             String name = source.getDb() + "." + source.getTable();
             Map<String, TableConfig> tableConfig = TableConfig.getTableConfig();
-            if(tableConfig.containsKey(name)){
+            if(tableConfig.containsKey(name) && "src".equals(tableConfig.get(name).getTableType())){
                 return true;
             }
-            System.out.println(name+"不是配置的数据表，不处理");
+            System.out.println(name+"不是配置的数据源表，不处理");
         } catch (Exception e){
             e.printStackTrace();
             log.error("BinlogFilterFunction.filter", e);

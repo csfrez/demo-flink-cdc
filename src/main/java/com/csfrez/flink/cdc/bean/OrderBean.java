@@ -2,6 +2,7 @@ package com.csfrez.flink.cdc.bean;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -13,7 +14,7 @@ public class OrderBean extends BaseBean{
 
     private String customer_name;
 
-    private String price;
+    private BigDecimal price;
 
     private Long product_id;
 

@@ -21,6 +21,12 @@ public class TableConfig {
 
     private static Map<String, TableConfig> tableConfigMap = new ConcurrentHashMap<>();
 
+    /**
+     * 数据表类型
+     * src:源表
+     * dst:目标表
+     */
+    private String tableType;
     private String dataSourceName;
     private String columns;
     private String beanReference;
@@ -57,7 +63,6 @@ public class TableConfig {
     public static TableConfig getTableConfig(String name){
         return tableConfigMap.get(name);
     }
-
 
 
     public static void main(String[] args) {

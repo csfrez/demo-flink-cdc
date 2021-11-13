@@ -1,26 +1,30 @@
 {
     "mydb.orders": {
+        "tableType": "src",
         "dataSourceName": "one",
         "columns": "order_id,order_date,customer_name,price,product_id,order_status",
         "beanReference": "com.csfrez.flink.cdc.bean.OrderBean",
         "relateTables": "mydb.enriched_orders,mydb.enriched_orders_temp"
     },
     "mydb.products": {
+        "tableType": "src",
         "dataSourceName": "one",
         "columns": "id,name,description",
         "beanReference": "com.csfrez.flink.cdc.bean.ProductBean",
         "relateTables": "mydb.enriched_orders"
     },
     "mydb.shipments": {
+        "tableType": "src",
         "dataSourceName": "two",
         "columns": "shipment_id,order_id,origin,destination,is_arrived",
-        "beanReference": "com.csfrez.flink.cdc.bean.OrderBean",
+        "beanReference": "com.csfrez.flink.cdc.bean.ShipmentBean",
         "relateTables": "mydb.enriched_orders"
     },
     "mydb.enriched_orders": {
+        "tableType": "dst",
         "dataSourceName": "two",
         "columns": "order_id,order_date,customer_name,price,product_id,order_status,name,description,shipment_id,origin,destination,is_arrived",
-        "beanReference": "com.csfrez.flink.cdc.bean.OrderBean",
-        "relateTables": "mydb.orders"
+        "beanReference": "",
+        "relateTables": ""
     }
 }
