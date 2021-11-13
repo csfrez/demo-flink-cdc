@@ -6,12 +6,14 @@ import com.csfrez.flink.cdc.config.TableConfig;
 import com.csfrez.flink.cdc.enumeration.OperationTypeEnum;
 import com.csfrez.flink.cdc.factory.ProcessFactory;
 import com.csfrez.flink.cdc.service.ProcessService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.util.Collector;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public class BinlogFlatMapFunction implements FlatMapFunction<String, StatementBean> {
 
     private Map<String, Class<?>> clazzMap = new ConcurrentHashMap<>();
@@ -23,23 +25,29 @@ public class BinlogFlatMapFunction implements FlatMapFunction<String, StatementB
 
     @Override
     public void flatMap(String value, Collector<StatementBean> out) throws Exception {
-        BinlogBean binlogBean = BinlogBean.builder(value);
-        BinlogBean.Source source = binlogBean.getSource();
-        String name = source.getDb() + "." + source.getTable();
+        try {
+            BinlogBean binlogBean = BinlogBean.builder(value);
+            BinlogBean.Source source = binlogBean.getSource();
+            String name = source.getDb() + "." + source.getTable();
 
-        JSONObject before = binlogBean.getBefore();
-        JSONObject after = binlogBean.getAfter();
-        System.out.println(name + ".before=" + binlogBean.getBefore());
-        System.out.println(name + ".after=" + binlogBean.getAfter());
+            JSONObject before = binlogBean.getBefore();
+            JSONObject after = binlogBean.getAfter();
+            System.out.println(name + ".before=" + binlogBean.getBefore());
+            System.out.println(name + ".after=" + binlogBean.getAfter());
 
-        if(before != null && after != null){
-            this.collectStatementBean(name, OperationTypeEnum.UPDATE.value(), this.convertBean(name, after), out);
+            if(before != null && after != null){
+                this.collectStatementBean(name, OperationTypeEnum.UPDATE.value(), this.convertBean(name, after), out);
+            } else if(before ==null && after != null){
+                this.collectStatementBean(name, OperationTypeEnum.INSERT.value(), this.convertBean(name, after), out);
+            } else if(before !=null && after == null){
+                this.collectStatementBean(name, OperationTypeEnum.DELETE.value(), this.convertBean(name, before), out);
+            } else {
+                System.out.println(name + "====》无法确定的操作类型");
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            log.error("BinlogFlatMapFunction.flatMap", e);
         }
-//        Class<?> aClass = Class.forName(tableConfig.getBeanReference());
-//        Object o = binlogBean.getBefore().toJavaObject(Class.forName(tableConfig.getBeanReference()));
-//        OrderBean orderBeanBefore = binlogBean.getBefore().toJavaObject(OrderBean.class);
-//        OrderBean orderBeanAfter = binlogBean.getAfter().toJavaObject(OrderBean.class);
-//        out.collect(orderBeanAfter);
     }
 
     private BaseBean convertBean(String name, JSONObject jsonObject) throws ClassNotFoundException {

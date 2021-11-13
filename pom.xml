@@ -51,11 +51,16 @@
 			<artifactId>flink-connector-mysql-cdc</artifactId>
 			<version>1.4.0</version>
 		</dependency>
-		<dependency>
+		<!--<dependency>
             <groupId>com.alibaba.ververica</groupId>
             <artifactId>flink-connector-debezium</artifactId>
             <version>1.4.0</version>
-        </dependency>
+        </dependency>-->
+        <!--<dependency>
+            <groupId>com.ververica</groupId>
+            <artifactId>flink-connector-debezium</artifactId>
+            <version>2.0.2</version>
+        </dependency>-->
 
 		<!-- log4j日志相关坐标 -->
 		<dependency>

@@ -18,6 +18,7 @@
 
 package com.csfrez.flink.cdc.debezium;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.ververica.cdc.debezium.DebeziumDeserializationSchema;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -56,6 +57,7 @@ public class JsonDebeziumDeserializationSchema implements DebeziumDeserializatio
 
     @Override
     public void deserialize(SourceRecord record, Collector<String> out) throws Exception {
+        System.out.println("record.value=" + record.value());
         if (jsonConverter == null) {
             // initialize jsonConverter
             jsonConverter = new JsonConverter();
@@ -65,7 +67,9 @@ public class JsonDebeziumDeserializationSchema implements DebeziumDeserializatio
             jsonConverter.configure(configs);
         }
         byte[] bytes = jsonConverter.fromConnectData(record.topic(), record.valueSchema(), record.value());
-        out.collect(new String(bytes));
+        String json = new String(bytes);
+        System.out.println(json);
+        out.collect(json);
     }
 
     @Override

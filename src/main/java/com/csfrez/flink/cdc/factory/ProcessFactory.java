@@ -18,7 +18,7 @@ public class ProcessFactory {
         } else if (name.equalsIgnoreCase("mydb.enriched_orders")) {
             return new EnrichedOrdersProcessService();
         } else {
-            System.out.println("Invalid factory name");
+            System.out.println("Invalid factory name =====>>" + name);
             return null;
         }
     }

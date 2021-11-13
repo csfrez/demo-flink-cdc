@@ -2,18 +2,13 @@ package com.csfrez.flink.cdc.demo;
 
 import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
 import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
-import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
-import com.csfrez.flink.cdc.bean.BaseBean;
-import com.csfrez.flink.cdc.bean.BinlogBean;
 import com.csfrez.flink.cdc.bean.StatementBean;
+import com.csfrez.flink.cdc.debezium.FastjonDeserializationSchema;
 import com.csfrez.flink.cdc.debezium.JsonDebeziumDeserializationSchema;
 import com.csfrez.flink.cdc.function.BinlogFilterFunction;
 import com.csfrez.flink.cdc.function.BinlogFlatMapFunction;
-import com.csfrez.flink.cdc.function.BinlogProcessFunction;
 import com.csfrez.flink.cdc.sink.MySqlJdbcSink;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
 
@@ -33,7 +28,8 @@ public class MySqlSourceExample {
                     .username("root")
                     .password("123456")
                     .startupOptions(StartupOptions.latest())
-                    .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to String
+                    .deserializer(new FastjonDeserializationSchema()) // converts SourceRecord to String
+//                    .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to String
 //                    .deserializer(new StringDebeziumDeserializationSchema()) // converts SourceRecord to String
                     .build();
 
