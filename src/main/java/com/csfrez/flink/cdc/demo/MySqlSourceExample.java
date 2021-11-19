@@ -38,7 +38,7 @@ public class MySqlSourceExample {
             // enable checkpoint
             env.enableCheckpointing(3000);
 
-            DataStream<String> dataStream = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source").setParallelism(1);
+            DataStream<String> dataStream = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source");
 //            dataStream.print().setParallelism(1);
 
             DataStream<String> filterDataStream = dataStream.filter(new BinlogFilterFunction());
