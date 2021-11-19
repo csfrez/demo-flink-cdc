@@ -1,9 +1,10 @@
 package com.csfrez.flink.cdc;
 
-import com.csfrez.flink.cdc.debezium.FastjonDeserializationSchema;
+import com.csfrez.flink.cdc.debezium.JsonDebeziumDeserializationSchema;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
-import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
+import com.ververica.cdc.connectors.mysql.table.StartupOptions;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 public class MySqlSourceApplication {
@@ -16,8 +17,10 @@ public class MySqlSourceApplication {
                 .tableList("mydb.orders") // set captured table
                 .username("root")
                 .password("123456")
-                .deserializer(new FastjonDeserializationSchema()) // converts SourceRecord to JSON String
-//                .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to JSON String
+                .serverTimeZone("Asia/Shanghai")
+                .startupOptions(StartupOptions.latest())
+//                .deserializer(new FastjonDeserializationSchema()) // converts SourceRecord to JSON String
+                .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to JSON String
                 .build();
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -25,9 +28,12 @@ public class MySqlSourceApplication {
         // enable checkpoint
         env.enableCheckpointing(3000);
 
-        env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source")
-           .setParallelism(2) // set 2 parallel source tasks
-           .print().setParallelism(1); // use parallelism 1 for sink to keep message ordering
+        DataStream<String> dataStream = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source");
+
+        // use parallelism 1 for sink to keep message ordering
+        dataStream.print().setParallelism(1);
+
+//        dataStream.addSink(new StringSink());
 
         env.execute("Print MySQL Snapshot + Binlog");
     }

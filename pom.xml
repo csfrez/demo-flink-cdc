@@ -16,7 +16,8 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
-        <flink.version>1.13.3</flink.version>
+        <flink.version>1.12.5</flink.version>
+        <!--<flink.version>1.13.3</flink.version>-->
         <scala.version>2.12</scala.version>
 		<slf4j.version>1.7.21</slf4j.version>
         <debezium.version>1.5.4.Final</debezium.version>
