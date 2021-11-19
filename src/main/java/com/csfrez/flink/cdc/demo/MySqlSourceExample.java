@@ -1,12 +1,12 @@
 package com.csfrez.flink.cdc.demo;
 
 import com.csfrez.flink.cdc.bean.StatementBean;
+import com.csfrez.flink.cdc.debezium.FastjonDeserializationSchema;
 import com.csfrez.flink.cdc.function.BinlogFilterFunction;
 import com.csfrez.flink.cdc.function.BinlogFlatMapFunction;
 import com.csfrez.flink.cdc.sink.MySqlJdbcSink;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
 import com.ververica.cdc.connectors.mysql.table.StartupOptions;
-import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -27,9 +27,9 @@ public class MySqlSourceExample {
                     .tableList("mydb.orders") // set captured table
                     .username("root")
                     .password("123456")
-//                    .startupOptions(StartupOptions.latest())
-                    .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to String
+                    .startupOptions(StartupOptions.latest())
 //                    .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to String
+                    .deserializer(new FastjonDeserializationSchema()) // converts SourceRecord to String
 //                    .deserializer(new StringDebeziumDeserializationSchema()) // converts SourceRecord to String
                     .build();
 

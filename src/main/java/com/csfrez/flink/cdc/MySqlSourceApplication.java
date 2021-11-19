@@ -1,5 +1,6 @@
 package com.csfrez.flink.cdc;
 
+import com.csfrez.flink.cdc.debezium.FastjonDeserializationSchema;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
 import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
@@ -15,7 +16,8 @@ public class MySqlSourceApplication {
                 .tableList("mydb.orders") // set captured table
                 .username("root")
                 .password("123456")
-                .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to JSON String
+                .deserializer(new FastjonDeserializationSchema()) // converts SourceRecord to JSON String
+//                .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to JSON String
                 .build();
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
