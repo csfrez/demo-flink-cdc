@@ -1,14 +1,13 @@
 package com.csfrez.flink.cdc.service.impl;
 
 import com.csfrez.flink.cdc.bean.*;
-import com.csfrez.flink.cdc.config.TableConfig;
 import com.csfrez.flink.cdc.dao.ProductDao;
 import com.csfrez.flink.cdc.enumeration.OperationTypeEnum;
-import com.csfrez.flink.cdc.service.ProcessService;
 import com.csfrez.flink.cdc.tool.DateTool;
 import com.csfrez.flink.cdc.tool.ParamTool;
 import com.csfrez.flink.cdc.tool.StringTool;
-import scala.Int;
+import com.csfrez.flink.cdc.config.TableConfig;
+import com.csfrez.flink.cdc.service.ProcessService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

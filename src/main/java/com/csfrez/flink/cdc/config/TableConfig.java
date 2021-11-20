@@ -1,14 +1,14 @@
 package com.csfrez.flink.cdc.config;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,10 +39,8 @@ public class TableConfig {
 
     static {
         try {
-            InputStream inputStream = DruidConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILE);
+            InputStream inputStream = TableConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILE);
             String json = IOUtils.toString(inputStream, "UTF-8");
-//            String path = DruidConfig.class.getClassLoader().getResource(CONFIG_FILE).getPath();
-//            String json = FileUtils.readFileToString(new File(path), "UTF-8");
             System.out.println(json);
             JSONObject jsonObject = JSONObject.parseObject(json);
             Set<String> keySet = jsonObject.keySet();
@@ -51,6 +49,7 @@ public class TableConfig {
                 tableConfigMap.put(key, tableConfig);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("initTableConfig()", e);
         }
     }
@@ -67,9 +66,21 @@ public class TableConfig {
         return tableConfigMap.get(name);
     }
 
+    public static List<String> getTableList(){
+        List<String> tableList = new ArrayList<>();
+        tableConfigMap.forEach((tableName, tableConfig) ->{
+            if("src".equals(tableConfig.getTableType())){
+                tableList.add(tableName);
+            }
+        });
+        return tableList;
+    }
+
 
     public static void main(String[] args) {
         System.out.println(getTableConfig("mydb.orders").getColumns());
+
+        System.out.println(getTableConfig("bpms.sys_team").getDataSourceName());
     }
 
 

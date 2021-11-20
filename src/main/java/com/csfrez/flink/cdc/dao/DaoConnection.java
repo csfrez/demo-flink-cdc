@@ -13,14 +13,15 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author yangzhi
  * @date 2021/11/11
- * @email yangzhi@ddjf.com.cn
+ * @email csfrez@163.com
  */
 public class DaoConnection {
 
     private static Map<String, DruidDataSource> dataSourceMap = new ConcurrentHashMap<>();
 
-    private static DruidDataSource init(String name) throws SQLException {
-        Map<String, DruidConfig> druidConfigMap = DruidConfig.getDruidConfig();
+
+    private static DruidDataSource init(String name, String active) throws SQLException {
+        Map<String, DruidConfig> druidConfigMap = DruidConfig.getDruidConfig(active);
         DruidConfig druidConfig = druidConfigMap.get(name);
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setDriverClassName(druidConfig.getDriverClassName());
@@ -50,13 +51,13 @@ public class DaoConnection {
         return dataSource;
     }
 
-    public synchronized static Connection getConnection(String name) {
+    public synchronized static Connection getConnection(String name, String active) {
         DruidDataSource druidDataSource = dataSourceMap.get(name);
         try {
             if(druidDataSource != null){
                 return druidDataSource.getConnection();
             }
-            return init(name).getConnection();
+            return init(name, active).getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,7 +65,7 @@ public class DaoConnection {
     }
 
     public static void main(String[] args) {
-        Connection connection = DaoConnection.getConnection("one");
+        Connection connection = DaoConnection.getConnection("one", "test");
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT customer_name FROM orders WHERE order_id = ?");
             preparedStatement.setString(1, "10001");

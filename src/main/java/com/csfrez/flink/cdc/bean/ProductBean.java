@@ -1,8 +1,10 @@
 package com.csfrez.flink.cdc.bean;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class ProductBean extends BaseBean{
 
     private Long id;

@@ -1,11 +1,9 @@
 package com.csfrez.flink.cdc.sink;
 
-import com.alibaba.druid.util.jdbc.PreparedStatementBase;
-import com.csfrez.flink.cdc.bean.PrepareStatementBean;
 import com.csfrez.flink.cdc.bean.StatementBean;
-import com.csfrez.flink.cdc.dao.DaoConnection;
-import com.csfrez.flink.cdc.enumeration.OperationTypeEnum;
 import com.csfrez.flink.cdc.tool.IOTool;
+import com.csfrez.flink.cdc.bean.PrepareStatementBean;
+import com.csfrez.flink.cdc.dao.DaoConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 
@@ -18,13 +16,22 @@ import java.util.List;
 @Slf4j
 public class MySqlJdbcSink extends RichSinkFunction<StatementBean> {
 
+    private static final long serialVersionUID = -2080964448675323976L;
+
+    private String active = "";
+
+    public MySqlJdbcSink(String active){
+        this.active = active;
+    }
+
     // 每来一条数据，调用连接，执行sql
     @Override
     public void invoke(StatementBean value, Context context) throws Exception {
         PreparedStatement pstmt = null;
         Statement stmt = null;
+        Connection connection = null;
         try {
-            Connection connection = DaoConnection.getConnection(value.getDataSourceName());
+            connection = DaoConnection.getConnection(value.getDataSourceName(), this.active);
             System.out.println("操作类型为===>>" + value.getOperationType());
             System.out.println("SQL===>>" + value.getSql());
 
@@ -33,11 +40,9 @@ public class MySqlJdbcSink extends RichSinkFunction<StatementBean> {
                 pstmt = connection.prepareStatement(value.getSql());
                 this.setParam(prepareStatementBean.getParamList(), pstmt);
                 pstmt.executeUpdate();
-                IOTool.close(pstmt);
             } else {
                 stmt = connection.createStatement();
                 stmt.executeUpdate(value.getSql());
-                IOTool.close(stmt);
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -45,6 +50,7 @@ public class MySqlJdbcSink extends RichSinkFunction<StatementBean> {
         } finally {
             IOTool.close(pstmt);
             IOTool.close(stmt);
+            IOTool.close(connection);
         }
     }
 

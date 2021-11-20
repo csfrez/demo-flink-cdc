@@ -3,14 +3,13 @@ package com.csfrez.flink.cdc.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.csfrez.flink.cdc.tool.HumpTool;
+import com.csfrez.flink.cdc.tool.IOTool;
+import com.csfrez.flink.cdc.tool.ReflectTool;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -20,16 +19,15 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author yangzhi
  * @date 2021/11/11
- * @email yangzhi@ddjf.com.cn
+ * @email csfrez@163.com
  */
 @Slf4j
 @Getter
 @Setter
 public class DruidConfig {
 
-    private static final String PREFIX = "datasource.druid.";
-    private static final String CONFIG_FILE = "druid.properties";
-    private static Properties properties = new Properties();
+    private static boolean initFlag = false;
+    private static Map<String, DruidConfig> configMap = new ConcurrentHashMap<>();
 
     private String url;
 
@@ -40,63 +38,52 @@ public class DruidConfig {
     private String password;
 
     private DruidConfig(){
-
     }
 
-    static {
+    public static Map<String, DruidConfig> getDruidConfig(String active){
+        if(!initFlag){
+            init(active);
+        }
+        return configMap;
+    }
+
+    public static void init(String active){
+        System.out.println(Constant.DRUID_PREFIX + ".active=" + active);
+        String configFile = Constant.DRUID_CONFIG_FILE;
+        if(StringUtils.isNotEmpty(active)){
+            configFile = Constant.DRUID_PREFIX + Constant.HYPHEN + active + Constant.PERIOD + Constant.SUFFIX;
+        }
         InputStream in = null;
         try {
-//            String path = DruidConfig.class.getClassLoader().getResource(CONFIG_FILE).getPath();
-//            in = new FileInputStream(path);
-            in = DruidConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILE);
+            Properties properties = new Properties();
+            in = DruidConfig.class.getClassLoader().getResourceAsStream(configFile);
             properties.load(in);
-        } catch (Exception e) {
-            log.error("initDruidConfig()", e);
-        } finally {
-            if(in != null){
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    log.error("initDruidConfig.IOException", e);
-                }
-            }
-        }
-    }
-
-    public static Map<String, DruidConfig> getDruidConfig(){
-        Map<String, DruidConfig> druidConfigMap = new ConcurrentHashMap<>();
-        try {
-            String[] names = properties.getProperty(PREFIX+"name").split(",");
+            String[] names = properties.getProperty(Constant.DRUID_NAME).split(Constant.COMMA);
             for(String name : names){
                 Field[] fields = DruidConfig.class.getDeclaredFields();
-                DruidConfig druidConfig = new DruidConfig();
+                DruidConfig config = new DruidConfig();
                 for(Field field: fields){
-                    String property = properties.getProperty(PREFIX + name + "." + HumpTool.humpToLine(field.getName()));
+                    String key = Constant.DRUID_PREFIX + Constant.PERIOD + name + Constant.PERIOD + HumpTool.humpToLine(field.getName());
+                    String property = properties.getProperty(key);
                     if(StringUtils.isNotEmpty(property)){
-                        System.out.println(PREFIX + name + "." + field.getName()+"=" + property);
-                        setValueByFieldName(druidConfig, field, property);
+                        System.out.println(Constant.DRUID_PREFIX + Constant.PERIOD + name + Constant.PERIOD + field.getName()+"=" + property);
+                        ReflectTool.setValueByFieldName(config, field, property);
                     }
                 }
-                druidConfigMap.put(name, druidConfig);
+                configMap.put(name, config);
             }
-        } catch (Exception e){
-            log.error("getDruidConfig()", e);
-        }
-        return druidConfigMap;
-    }
-
-    public static void setValueByFieldName(Object obj, Field field, Object value) throws Exception {
-        if (field.isAccessible()) {
-            field.set(obj, value);
-        } else {
-            field.setAccessible(true);
-            field.set(obj, value);
-            field.setAccessible(false);
+            initFlag = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("initDruidConfig()", e);
+        } finally {
+            IOTool.close(in);
         }
     }
 
     public static void main(String[] args) {
-        System.out.println(JSONObject.toJSONString(DruidConfig.getDruidConfig()));
+        //DruidConfig.init("dev");
+        System.out.println(JSONObject.toJSONString(DruidConfig.getDruidConfig("")));
     }
 
 

@@ -23,6 +23,7 @@ import com.alibaba.ververica.cdc.debezium.DebeziumDeserializationSchema;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.util.Collector;
+import org.apache.kafka.connect.json.DecimalFormat;
 import org.apache.kafka.connect.json.JsonConverter;
 import org.apache.kafka.connect.json.JsonConverterConfig;
 import org.apache.kafka.connect.source.SourceRecord;
@@ -41,10 +42,6 @@ public class JsonDebeziumDeserializationSchema implements DebeziumDeserializatio
 
     private transient JsonConverter jsonConverter;
 
-    /**
-     * Configuration whether to enable {@link JsonConverterConfig.SCHEMAS_ENABLE_CONFIG} to include
-     * schema in messages.
-     */
     private final Boolean includeSchema;
 
     public JsonDebeziumDeserializationSchema() {
@@ -57,19 +54,17 @@ public class JsonDebeziumDeserializationSchema implements DebeziumDeserializatio
 
     @Override
     public void deserialize(SourceRecord record, Collector<String> out) throws Exception {
-        System.out.println("record.value=" + record.value());
         if (jsonConverter == null) {
             // initialize jsonConverter
             jsonConverter = new JsonConverter();
-            final HashMap<String, Object> configs = new HashMap<>(2);
+            final HashMap<String, Object> configs = new HashMap<>(4);
             configs.put(ConverterConfig.TYPE_CONFIG, ConverterType.VALUE.getName());
             configs.put(JsonConverterConfig.SCHEMAS_ENABLE_CONFIG, includeSchema);
+            configs.put(JsonConverterConfig.DECIMAL_FORMAT_CONFIG, DecimalFormat.NUMERIC.name());
             jsonConverter.configure(configs);
         }
         byte[] bytes = jsonConverter.fromConnectData(record.topic(), record.valueSchema(), record.value());
-        String json = new String(bytes);
-        System.out.println(json);
-        out.collect(json);
+        out.collect(new String(bytes));
     }
 
     @Override

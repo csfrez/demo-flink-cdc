@@ -1,5 +1,7 @@
 package com.csfrez.flink.cdc.tool;
 
+import java.io.InputStream;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -27,6 +29,22 @@ public class IOTool {
         try{
             if(pstmt != null)
                 pstmt.close();
+        } catch (Exception e){
+        }
+    }
+
+    public static void close(Connection conn){
+        try{
+            if(conn != null)
+                conn.close();
+        } catch (Exception e){
+        }
+    }
+
+    public static void close(InputStream inputStream){
+        try{
+            if(inputStream != null)
+                inputStream.close();
         } catch (Exception e){
         }
     }

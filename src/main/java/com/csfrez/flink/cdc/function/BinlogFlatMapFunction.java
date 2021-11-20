@@ -1,11 +1,14 @@
 package com.csfrez.flink.cdc.function;
 
 import com.alibaba.fastjson.JSONObject;
-import com.csfrez.flink.cdc.bean.*;
-import com.csfrez.flink.cdc.config.TableConfig;
+import com.csfrez.flink.cdc.bean.BaseBean;
+import com.csfrez.flink.cdc.bean.BinlogBean;
+import com.csfrez.flink.cdc.bean.StatementBean;
 import com.csfrez.flink.cdc.enumeration.OperationTypeEnum;
+import com.csfrez.flink.cdc.config.TableConfig;
 import com.csfrez.flink.cdc.factory.ProcessFactory;
 import com.csfrez.flink.cdc.service.ProcessService;
+import com.csfrez.flink.cdc.thread.StringThreadLocal;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.util.Collector;
@@ -17,19 +20,20 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BinlogFlatMapFunction implements FlatMapFunction<String, StatementBean> {
 
     private Map<String, Class<?>> clazzMap = new ConcurrentHashMap<>();
+    private String active = "";
 
-    public BinlogFlatMapFunction(){
-
+    public BinlogFlatMapFunction(String active){
+        this.active = active;
     }
-
 
     @Override
     public void flatMap(String value, Collector<StatementBean> out) throws Exception {
         try {
+            StringThreadLocal.set(active);
+
             BinlogBean binlogBean = BinlogBean.builder(value);
             BinlogBean.Source source = binlogBean.getSource();
             String name = source.getDb() + "." + source.getTable();
-
             JSONObject before = binlogBean.getBefore();
             JSONObject after = binlogBean.getAfter();
             System.out.println(name + ".before=" + binlogBean.getBefore());
@@ -47,6 +51,8 @@ public class BinlogFlatMapFunction implements FlatMapFunction<String, StatementB
         } catch (Exception e){
             e.printStackTrace();
             log.error("BinlogFlatMapFunction.flatMap", e);
+        } finally {
+            StringThreadLocal.remove();
         }
     }
 

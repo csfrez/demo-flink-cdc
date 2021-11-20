@@ -15,87 +15,83 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <maven-compiler.version>3.8.1</maven-compiler.version>
+        <maven-assembly.version>3.3.0</maven-assembly.version>
 
         <flink.version>1.12.5</flink.version>
         <scala.version>2.12</scala.version>
-		<slf4j.version>1.7.21</slf4j.version>
-		<flink-connector-mysql-cdc.version>1.4.0</flink-connector-mysql-cdc.version>
-        <debezium.version>1.5.4.Final</debezium.version>
+        <slf4j.version>1.7.21</slf4j.version>
+        <mysql-cdc.version>1.4.0</mysql-cdc.version>
+        <fastjson.version>1.2.78</fastjson.version>
+        <lombok.version>1.18.22</lombok.version>
+        <druid.version>1.2.8</druid.version>
+        <mysql-connector.version>8.0.27</mysql-connector.version>
 
     </properties>
 
     <dependencies>
-        
+
         <!-- flink java 依赖 -->
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-java</artifactId>
-			<version>${flink.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-java</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-streaming-java_${scala.version}</artifactId>
-			<version>${flink.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-streaming-java_${scala.version}</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-clients_${scala.version}</artifactId>
-			<version>${flink.version}</version>
-		</dependency>
-		
-		<!-- cdc mysqlsource 依赖 -->
-		<dependency>
-			<groupId>com.alibaba.ververica</groupId>
-			<artifactId>flink-connector-mysql-cdc</artifactId>
-			<version>1.4.0</version>
-		</dependency>
-		<!--<dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-clients_${scala.version}</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+        <!-- cdc mysqlsource 依赖 -->
+        <dependency>
             <groupId>com.alibaba.ververica</groupId>
-            <artifactId>flink-connector-debezium</artifactId>
-            <version>1.4.0</version>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>com.ververica</groupId>
-            <artifactId>flink-connector-debezium</artifactId>
-            <version>2.0.2</version>
-        </dependency>-->
+            <artifactId>flink-connector-mysql-cdc</artifactId>
+            <version>${mysql-cdc.version}</version>
+        </dependency>
 
-		<!-- log4j日志相关坐标 -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.21</version>
-		</dependency>
+        <!-- log4j日志相关坐标 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.21</version>
-		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.78</version>
+            <version>${fastjson.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
+            <version>${lombok.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
-            <version>1.2.8</version>
+            <version>${druid.version}</version>
         </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.27</version>
+            <version>${mysql-connector.version}</version>
         </dependency>
 
     </dependencies>
@@ -106,7 +102,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>${maven-compiler.version}</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
@@ -116,7 +112,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>${maven-assembly.version}</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -134,6 +130,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>

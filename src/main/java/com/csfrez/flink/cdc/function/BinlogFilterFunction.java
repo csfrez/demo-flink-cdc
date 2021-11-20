@@ -1,6 +1,5 @@
 package com.csfrez.flink.cdc.function;
 
-import com.alibaba.fastjson.JSONObject;
 import com.csfrez.flink.cdc.bean.BinlogBean;
 import com.csfrez.flink.cdc.config.TableConfig;
 import lombok.extern.slf4j.Slf4j;
