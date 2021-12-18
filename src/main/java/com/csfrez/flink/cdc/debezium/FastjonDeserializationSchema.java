@@ -77,6 +77,13 @@ public class FastjonDeserializationSchema implements DebeziumDeserializationSche
         Object ts_ms = source.get("ts_ms");
         Object version = source.get("version");
         Object connector = source.get("connector");
+        Object serverId = source.get("server_id");
+        Object pos = source.get("pos");
+        Object gtid = source.get("gtid");
+        Object row = source.get("row");
+        Object thread = source.get("thread");
+        Object file = source.get("file");
+        Object query = source.get("query");
         Object name = source.get("name");
 
         JSONObject sourceJson = new JSONObject();
@@ -86,13 +93,21 @@ public class FastjonDeserializationSchema implements DebeziumDeserializationSche
         sourceJson.put("version", version);
         sourceJson.put("connector", connector);
         sourceJson.put("name", name);
-        fastJson.put("source", sourceJson);
+        sourceJson.put("server_id", serverId);
+        sourceJson.put("pos", pos);
+        sourceJson.put("row", row);
+        sourceJson.put("thread", thread);
+        sourceJson.put("gtid", gtid);
+        sourceJson.put("file", file);
+        sourceJson.put("query", query);
 
+        fastJson.put("source", sourceJson);
         fastJson.put("ts_ms", dataRecord.get("ts_ms"));
         fastJson.put("op", dataRecord.get("op"));
         fastJson.put("transaction", dataRecord.get("transaction"));
-
-        out.collect(JSONObject.toJSONString(fastJson));
+        String jsonString = JSONObject.toJSONString(fastJson);
+        System.out.println(jsonString);
+        out.collect(jsonString);
     }
 
     @Override

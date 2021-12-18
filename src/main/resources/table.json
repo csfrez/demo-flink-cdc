@@ -1,12 +1,12 @@
 {
-    "mydb.orders": {
+    "orders": {
         "tableType": "src",
         "dataSourceName": "one",
         "columns": "order_id,order_date,customer_name,price,product_id,order_status",
         "beanReference": "com.csfrez.flink.cdc.bean.OrderBean",
         "relateTables": "mydb.enriched_orders,mydb.enriched_orders_temp"
     },
-    "mydb.products": {
+    "products": {
         "tableType": "src",
         "dataSourceName": "one",
         "columns": "id,name,description",

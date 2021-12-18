@@ -17,6 +17,7 @@ import org.apache.flink.streaming.api.functions.source.SourceFunction;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author yangzhi
@@ -52,6 +53,8 @@ public class MySqlSourceApplication {
         for(Map.Entry<String, SourceConfig> entry: sourceConfigMap.entrySet()) {
             SourceConfig sourceConfig = entry.getValue();
             System.out.println(entry.getKey() + "===>" + sourceConfig);
+            Properties properties = new Properties();
+            properties.setProperty("snapshot.mode", "schema_only");
             SourceFunction<String> sourceFunction = MySQLSource.<String>builder()
                     .hostname(sourceConfig.getHostname())
 //                    .serverTimeZone("Europe/London")
@@ -60,9 +63,12 @@ public class MySqlSourceApplication {
                     .tableList(tableList.toArray(new String[tableList.size()]))
                     .username(sourceConfig.getUsername())
                     .password(sourceConfig.getPassword())
-                    .startupOptions(StartupOptions.latest())
+                    .startupOptions(StartupOptions.timestamp(1639831160000L))
+//                    .startupOptions(StartupOptions.specificOffset("mysql-bin.000008", 150489))
+//                    .startupOptions(StartupOptions.latest())
 //                    .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to String
                     .deserializer(new FastjonDeserializationSchema()) // converts SourceRecord to String
+//                    .debeziumProperties(properties)
                     .build();
             DataStream<String> dataStream = env.addSource(sourceFunction, entry.getKey());
             DataStream<String> filterDataStream = dataStream.filter(new BinlogFilterFunction());
