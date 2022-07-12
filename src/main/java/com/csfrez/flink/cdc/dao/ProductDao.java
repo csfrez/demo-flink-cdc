@@ -36,6 +36,7 @@ public class ProductDao extends BaseDao{
         } finally{
             IOTool.close(rs);
             IOTool.close(stmt);
+            IOTool.close(connection);
         }
         return null;
     }
