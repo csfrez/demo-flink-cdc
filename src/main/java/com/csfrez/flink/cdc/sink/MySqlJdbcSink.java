@@ -1,10 +1,8 @@
 package com.csfrez.flink.cdc.sink;
 
-import com.alibaba.druid.util.jdbc.PreparedStatementBase;
 import com.csfrez.flink.cdc.bean.PrepareStatementBean;
 import com.csfrez.flink.cdc.bean.StatementBean;
 import com.csfrez.flink.cdc.dao.DaoConnection;
-import com.csfrez.flink.cdc.enumeration.OperationTypeEnum;
 import com.csfrez.flink.cdc.tool.IOTool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;

@@ -1,6 +1,11 @@
 package com.csfrez.flink.cdc;
 
+import com.csfrez.flink.cdc.bean.StatementBean;
 import com.csfrez.flink.cdc.debezium.JsonDebeziumDeserializationSchema;
+import com.csfrez.flink.cdc.function.BinlogFilterFunction;
+import com.csfrez.flink.cdc.function.BinlogFlatMapFunction;
+import com.csfrez.flink.cdc.sink.MySqlJdbcSink;
+import com.csfrez.flink.cdc.sink.StringSink;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
 import com.ververica.cdc.connectors.mysql.table.StartupOptions;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
@@ -11,7 +16,7 @@ public class MySqlSourceApplication {
 
     public static void main(String[] args) throws Exception {
         MySqlSource<String> mySqlSource = MySqlSource.<String>builder()
-                .hostname("115.159.34.194")
+                .hostname("10.11.0.142")
                 .port(3306)
                 .databaseList("mydb") // set captured database
                 .tableList("mydb.orders") // set captured table
@@ -31,9 +36,14 @@ public class MySqlSourceApplication {
         DataStream<String> dataStream = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source");
 
         // use parallelism 1 for sink to keep message ordering
-        dataStream.print().setParallelism(1);
+        //dataStream.print().setParallelism(1);
+        //dataStream.addSink(new StringSink());
 
-//        dataStream.addSink(new StringSink());
+        DataStream<String> filterDataStream = dataStream.filter(new BinlogFilterFunction());
+        DataStream<StatementBean> flatMapDataStream = filterDataStream.flatMap(new BinlogFlatMapFunction());
+
+        flatMapDataStream.print();
+        flatMapDataStream.addSink(new MySqlJdbcSink());
 
         env.execute("Print MySQL Snapshot + Binlog");
     }
