@@ -32,7 +32,7 @@ public class ProcessFactory {
         if(processService != null){
             return processService;
         } else {
-            System.out.println("Invalid factory name ====>>" + name);
+            log.info("Invalid factory name ====>>" + name);
             return null;
         }
     }

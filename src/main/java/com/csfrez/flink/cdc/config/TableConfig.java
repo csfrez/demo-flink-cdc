@@ -41,7 +41,7 @@ public class TableConfig {
         try {
             InputStream inputStream = TableConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILE);
             String json = IOUtils.toString(inputStream, "UTF-8");
-            System.out.println(json);
+            log.info(json);
             JSONObject jsonObject = JSONObject.parseObject(json);
             Set<String> keySet = jsonObject.keySet();
             for(String key : keySet){

@@ -57,7 +57,7 @@ public class CommonConfig {
         for(Field field: fields){
             String property = properties.getProperty(PREFIX + HumpTool.humpToLine(field.getName()));
             if(StringUtils.isNotEmpty(property)){
-                System.out.println(PREFIX + field.getName()+"===>>" + property);
+                log.info(PREFIX + field.getName()+"===>>" + property);
                 ReflectTool.setValueByFieldName(commonConfig, field, property);
             }
         }

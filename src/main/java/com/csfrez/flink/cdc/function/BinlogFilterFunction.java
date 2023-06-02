@@ -13,7 +13,7 @@ public class BinlogFilterFunction implements FilterFunction<String> {
     @Override
     public boolean filter(String value) throws Exception {
         try{
-            //System.out.println(value);
+            //log.info(value);
             BinlogBean binlogBean = BinlogBean.builder(value);
             BinlogBean.Source source = binlogBean.getSource();
             String name = source.getDb() + "." + source.getTable();
@@ -21,7 +21,7 @@ public class BinlogFilterFunction implements FilterFunction<String> {
             if(tableConfig.containsKey(name) && "src".equals(tableConfig.get(name).getTableType())){
                 return true;
             }
-            System.out.println(name+"不是配置的数据源表，不处理");
+            log.info("BinlogFilterFunction.filter={}", name + "不是配置的数据源表，不处理");
         } catch (Exception e){
             e.printStackTrace();
             log.error("BinlogFilterFunction.filter", e);

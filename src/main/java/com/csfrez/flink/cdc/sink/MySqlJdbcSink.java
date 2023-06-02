@@ -32,8 +32,8 @@ public class MySqlJdbcSink extends RichSinkFunction<StatementBean> {
         Connection connection = null;
         try {
             connection = DaoConnection.getConnection(value.getDataSourceName(), this.active);
-            System.out.println("操作类型为===>>" + value.getOperationType());
-            System.out.println("SQL===>>" + value.getSql());
+            log.info("操作类型为===>>" + value.getOperationType());
+            log.info("SQL===>>" + value.getSql());
 
             if(value instanceof PrepareStatementBean){
                 PrepareStatementBean prepareStatementBean = (PrepareStatementBean)value;

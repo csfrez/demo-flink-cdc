@@ -48,7 +48,7 @@ public class DruidConfig {
     }
 
     public static void init(String active){
-        System.out.println(Constant.DRUID_PREFIX + ".active=" + active);
+        log.info(Constant.DRUID_PREFIX + ".active=" + active);
         String configFile = Constant.DRUID_CONFIG_FILE;
         if(StringUtils.isNotEmpty(active)){
             configFile = Constant.DRUID_PREFIX + Constant.HYPHEN + active + Constant.PERIOD + Constant.SUFFIX;
@@ -66,7 +66,7 @@ public class DruidConfig {
                     String key = Constant.DRUID_PREFIX + Constant.PERIOD + name + Constant.PERIOD + HumpTool.humpToLine(field.getName());
                     String property = properties.getProperty(key);
                     if(StringUtils.isNotEmpty(property)){
-                        System.out.println(Constant.DRUID_PREFIX + Constant.PERIOD + name + Constant.PERIOD + field.getName()+"=" + property);
+                        log.info(Constant.DRUID_PREFIX + Constant.PERIOD + name + Constant.PERIOD + field.getName()+"=" + property);
                         ReflectTool.setValueByFieldName(config, field, property);
                     }
                 }

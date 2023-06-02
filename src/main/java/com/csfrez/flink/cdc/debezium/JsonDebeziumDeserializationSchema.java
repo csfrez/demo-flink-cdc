@@ -18,17 +18,16 @@
 
 package com.csfrez.flink.cdc.debezium;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.ververica.cdc.debezium.DebeziumDeserializationSchema;
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.json.DecimalFormat;
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.json.JsonConverter;
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.json.JsonConverterConfig;
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.source.SourceRecord;
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.storage.ConverterConfig;
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.storage.ConverterType;
+import com.ververica.cdc.debezium.DebeziumDeserializationSchema;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.util.Collector;
-import org.apache.kafka.connect.json.DecimalFormat;
-import org.apache.kafka.connect.json.JsonConverter;
-import org.apache.kafka.connect.json.JsonConverterConfig;
-import org.apache.kafka.connect.source.SourceRecord;
-import org.apache.kafka.connect.storage.ConverterConfig;
-import org.apache.kafka.connect.storage.ConverterType;
 
 import java.util.HashMap;
 

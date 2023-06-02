@@ -48,7 +48,7 @@ public class SourceConfig {
      * @param active
      */
     public static void init(String active){
-        System.out.println(Constant.SOURCE_PREFIX + ".active=" + active);
+        log.info(Constant.SOURCE_PREFIX + ".active=" + active);
         String configFile = Constant.SOURCE_CONFIG_FILE;
         if(StringUtils.isNotEmpty(active)){
             configFile = Constant.SOURCE_PREFIX + Constant.HYPHEN + active + Constant.PERIOD + Constant.SUFFIX;
@@ -66,7 +66,7 @@ public class SourceConfig {
                     String key = Constant.SOURCE_PREFIX + Constant.PERIOD + name + Constant.PERIOD + HumpTool.humpToLine(field.getName());
                     String property = properties.getProperty(key);
                     if(StringUtils.isNotEmpty(property)){
-                        System.out.println(Constant.SOURCE_PREFIX + Constant.PERIOD + name + Constant.PERIOD + field.getName()+"=" + property);
+                        log.info(Constant.SOURCE_PREFIX + Constant.PERIOD + name + Constant.PERIOD + field.getName()+"=" + property);
                         ReflectTool.setValueByFieldName(config, field, property);
                     }
                 }

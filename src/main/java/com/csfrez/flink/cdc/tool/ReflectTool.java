@@ -1,7 +1,6 @@
 package com.csfrez.flink.cdc.tool;
 
 import lombok.extern.slf4j.Slf4j;
-import scala.Int;
 
 import java.lang.reflect.Field;
 

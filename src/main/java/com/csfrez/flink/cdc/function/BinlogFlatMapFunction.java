@@ -36,8 +36,8 @@ public class BinlogFlatMapFunction implements FlatMapFunction<String, StatementB
             String name = source.getDb() + "." + source.getTable();
             JSONObject before = binlogBean.getBefore();
             JSONObject after = binlogBean.getAfter();
-            System.out.println(name + ".before=" + binlogBean.getBefore());
-            System.out.println(name + ".after=" + binlogBean.getAfter());
+            log.info(name + ".before=" + binlogBean.getBefore());
+            log.info(name + ".after=" + binlogBean.getAfter());
 
             if(before != null && after != null){
                 this.collectStatementBean(name, OperationTypeEnum.UPDATE.value(), this.convertBean(name, after), out);
@@ -46,7 +46,7 @@ public class BinlogFlatMapFunction implements FlatMapFunction<String, StatementB
             } else if(before !=null && after == null){
                 this.collectStatementBean(name, OperationTypeEnum.DELETE.value(), this.convertBean(name, before), out);
             } else {
-                System.out.println(name + "====》无法确定的操作类型");
+                log.info(name + "====》无法确定的操作类型");
             }
         } catch (Exception e){
             e.printStackTrace();

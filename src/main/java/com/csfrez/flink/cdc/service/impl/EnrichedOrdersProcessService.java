@@ -1,20 +1,16 @@
 package com.csfrez.flink.cdc.service.impl;
 
 import com.csfrez.flink.cdc.bean.*;
+import com.csfrez.flink.cdc.config.TableConfig;
 import com.csfrez.flink.cdc.dao.ProductDao;
 import com.csfrez.flink.cdc.enumeration.OperationTypeEnum;
-import com.csfrez.flink.cdc.tool.DateTool;
-import com.csfrez.flink.cdc.tool.ParamTool;
-import com.csfrez.flink.cdc.tool.StringTool;
-import com.csfrez.flink.cdc.config.TableConfig;
 import com.csfrez.flink.cdc.service.ProcessService;
+import com.csfrez.flink.cdc.tool.ParamTool;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static java.sql.JDBCType.NULL;
 
 public class EnrichedOrdersProcessService implements ProcessService {
 
@@ -37,63 +33,39 @@ public class EnrichedOrdersProcessService implements ProcessService {
             prepareStatement.setOperationType(operationType);
             prepareStatement.setDataSourceName(TableConfig.getTableConfig(name).getDataSourceName());
             OrderBean orderBean = (OrderBean) baseBean;
-            String sql = "insert into `enriched_orders` (`order_id`, `order_date`, `customer_name`, `price`, `product_id`, `order_status`, `name`, `description`, `shipment_id`, `origin`, `destination`, `is_arrived`) " +
-                    "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "insert into `enriched_orders` (`order_id`, `order_date`, `customer_name`, `price`, `product_id`, `order_status`, `name`, `description`, `shipment_id`, `origin`, `destination`, `is_arrived`, `create_time`, `update_time`) " +
+                    "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             prepareStatement.setSql(sql);
             List<PrepareStatementBean.Param<?>> paramList = new ArrayList<>();
-            paramList.add(ParamTool.getParam(orderBean.getOrder_id(), 1, Long.class));
-            paramList.add(ParamTool.getParam(orderBean.getOrder_date(), 2, Date.class));
-            paramList.add(ParamTool.getParam(orderBean.getCustomer_name(), 3, String.class));
-            paramList.add(ParamTool.getParam(orderBean.getPrice(), 4, BigDecimal.class));
-            paramList.add(ParamTool.getParam(orderBean.getProduct_id(), 5, Long.class));
-            paramList.add(ParamTool.getParam(orderBean.getOrder_status(), 6, Integer.class));
+            paramList.add(ParamTool.getParam(1, orderBean.getOrder_id(), Long.class));
+            paramList.add(ParamTool.getParam(2, orderBean.getOrder_date(), Date.class));
+            paramList.add(ParamTool.getParam(3, orderBean.getCustomer_name(), String.class));
+            paramList.add(ParamTool.getParam(4, orderBean.getPrice(), BigDecimal.class));
+            paramList.add(ParamTool.getParam(5, orderBean.getProduct_id(), Long.class));
+            paramList.add(ParamTool.getParam(6, orderBean.getOrder_status(), Integer.class));
             ProductBean productBean = ProductDao.getProductBeanById(orderBean.getProduct_id());
             if(productBean != null){
-                paramList.add(ParamTool.getParam(productBean.getName(), 7, String.class));
-                paramList.add(ParamTool.getParam(productBean.getDescription(), 8, String.class));
+                paramList.add(ParamTool.getParam(7, productBean.getName(), String.class));
+                paramList.add(ParamTool.getParam(8, productBean.getDescription(), String.class));
             } else {
-                paramList.add(ParamTool.getParam(null, 7, String.class));
-                paramList.add(ParamTool.getParam(null, 8, String.class));
+                paramList.add(ParamTool.getParam(7, null, String.class));
+                paramList.add(ParamTool.getParam(8, null, String.class));
             }
-            paramList.add(ParamTool.getParam(null, 9, String.class));
-            paramList.add(ParamTool.getParam(null, 10, String.class));
-            paramList.add(ParamTool.getParam(null, 11, String.class));
-            paramList.add(ParamTool.getParam(null, 12, String.class));
+            paramList.add(ParamTool.getParam(9, null, String.class));
+            paramList.add(ParamTool.getParam(10, null, String.class));
+            paramList.add(ParamTool.getParam(11, null, String.class));
+            paramList.add(ParamTool.getParam(12, null, String.class));
+
+            //创建时间、更新时间默认值
+            Date date = new Date();
+            paramList.add(ParamTool.getParam(13, date, Date.class));
+            paramList.add(ParamTool.getParam(14, date, Date.class));
             prepareStatement.setParamList(paramList);
             return prepareStatement;
         } else if(baseBean instanceof ProductBean){
             return this.getUpdatePrepareStatement(name, operationType, baseBean);
         } else if(baseBean instanceof ShipmentBean){
             return this.getUpdatePrepareStatement(name, operationType, baseBean);
-        }
-        return null;
-    }
-
-    private StatementBean getInsertStatement(String name, String operationType, BaseBean baseBean){
-        StatementBean statementBean = new StatementBean();
-        if(baseBean instanceof OrderBean) {
-            statementBean.setOperationType(operationType);
-            statementBean.setDataSourceName(TableConfig.getTableConfig(name).getDataSourceName());
-            OrderBean orderBean = (OrderBean) baseBean;
-            StringBuffer sb = new StringBuffer();
-            sb.append("insert into `enriched_orders` (`order_id`, `order_date`, `customer_name`, `price`, `product_id`, `order_status`, `name`, `description`, `shipment_id`, `origin`, `destination`, `is_arrived`) values( ");
-            sb.append("'").append(orderBean.getOrder_id()).append("', ");
-            sb.append("'").append(DateTool.dateToString(orderBean.getOrder_date())).append("', ");
-            sb.append("'").append(orderBean.getCustomer_name()).append("', ");
-            sb.append("'").append(orderBean.getPrice()).append("', ");
-            sb.append("'").append(orderBean.getProduct_id()).append("', ");
-            sb.append("'").append(orderBean.getOrder_status()).append("', ");
-
-            ProductBean productBean = ProductDao.getProductBeanById(orderBean.getProduct_id());
-            if(productBean != null){
-                sb.append("'").append(productBean.getName()).append("', ");
-                sb.append("'").append(StringTool.replaceQuota(productBean.getDescription())).append("', ");
-            } else {
-                sb.append(NULL).append(", ").append(NULL).append(", ");
-            }
-            sb.append(NULL).append(", ").append(NULL).append(", ").append(NULL).append(", ").append(NULL).append(")");
-            statementBean.setSql(sb.toString());
-            return statementBean;
         }
         return null;
     }
@@ -104,73 +76,58 @@ public class EnrichedOrdersProcessService implements ProcessService {
         prepareStatement.setDataSourceName(TableConfig.getTableConfig(name).getDataSourceName());
         if(baseBean instanceof OrderBean) {
             OrderBean orderBean = (OrderBean) baseBean;
-            String sql = "update enriched_orders set order_date = ?, customer_name = ?, price = ?, product_id = ?, order_status = ? where order_id = ?";
+            String sql = "update enriched_orders set order_date = ?, customer_name = ?, price = ?, product_id = ?, order_status = ? , update_time = ? where order_id = ?";
             prepareStatement.setSql(sql);
 
             List<PrepareStatementBean.Param<?>> paramList = new ArrayList<>();
-            paramList.add(ParamTool.getParam(orderBean.getOrder_date(), 1, Date.class));
-            paramList.add(ParamTool.getParam(orderBean.getCustomer_name(), 2, String.class));
-            paramList.add(ParamTool.getParam(orderBean.getPrice(), 3, BigDecimal.class));
-            paramList.add(ParamTool.getParam(orderBean.getProduct_id(), 4, Long.class));
-            paramList.add(ParamTool.getParam(orderBean.getOrder_status(), 5, Integer.class));
-            paramList.add(ParamTool.getParam(orderBean.getOrder_id(), 6, Long.class));
+            paramList.add(ParamTool.getParam(1, orderBean.getOrder_date(), Date.class));
+            paramList.add(ParamTool.getParam(2, orderBean.getCustomer_name(), String.class));
+            paramList.add(ParamTool.getParam(3, orderBean.getPrice(), BigDecimal.class));
+            paramList.add(ParamTool.getParam(4, orderBean.getProduct_id(), Long.class));
+            paramList.add(ParamTool.getParam(5, orderBean.getOrder_status(), Integer.class));
+            paramList.add(ParamTool.getParam(6, new Date(), Date.class));
+            paramList.add(ParamTool.getParam(7, orderBean.getOrder_id(), Long.class));
+//            paramList.add(ParamTool.getParam(orderBean.getOrder_date(), 1, Date.class));
+//            paramList.add(ParamTool.getParam(orderBean.getCustomer_name(), 2, String.class));
+//            paramList.add(ParamTool.getParam(orderBean.getPrice(), 3, BigDecimal.class));
+//            paramList.add(ParamTool.getParam(orderBean.getProduct_id(), 4, Long.class));
+//            paramList.add(ParamTool.getParam(orderBean.getOrder_status(), 5, Integer.class));
+//            paramList.add(ParamTool.getParam(orderBean.getOrder_id(), 6, Long.class));
             prepareStatement.setParamList(paramList);
 
             return prepareStatement;
         } else if(baseBean instanceof ProductBean){
             ProductBean productBean = (ProductBean)baseBean;
-            String sql = "update enriched_orders set name = ?, description = ? where product_id = ?";
+            String sql = "update enriched_orders set name = ?, description = ?, update_time = ? where product_id = ?";
             prepareStatement.setSql(sql);
 
             List<PrepareStatementBean.Param<?>> paramList = new ArrayList<>();
-            paramList.add(ParamTool.getParam(productBean.getName(), 1, String.class));
-            paramList.add(ParamTool.getParam(productBean.getDescription(), 2, String.class));
-            paramList.add(ParamTool.getParam(productBean.getId(), 3, Long.class));
+            paramList.add(ParamTool.getParam(1, productBean.getName(), String.class));
+            paramList.add(ParamTool.getParam(2, productBean.getDescription(), String.class));
+            paramList.add(ParamTool.getParam(3, new Date(), Date.class));
+            paramList.add(ParamTool.getParam(4, productBean.getId(), Long.class));
+
+//            paramList.add(ParamTool.getParam(productBean.getName(), 1, String.class));
+//            paramList.add(ParamTool.getParam(productBean.getDescription(), 2, String.class));
+//            paramList.add(ParamTool.getParam(productBean.getId(), 3, Long.class));
             prepareStatement.setParamList(paramList);
 
             return prepareStatement;
         } else if(baseBean instanceof ShipmentBean){
             ShipmentBean shipmentBean = (ShipmentBean)baseBean;
-            String sql = "update enriched_orders set shipment_id = ?, origin = ?, destination = ?, is_arrived = ? where order_id = ?";
+            String sql = "update enriched_orders set shipment_id = ?, origin = ?, destination = ?, is_arrived = ?, update_time = ? where order_id = ?";
             prepareStatement.setSql(sql);
 
             List<PrepareStatementBean.Param<?>> paramList = new ArrayList<>();
-            paramList.add(ParamTool.getParam(shipmentBean.getShipment_id(), 1, Long.class));
-            paramList.add(ParamTool.getParam(shipmentBean.getOrigin(), 2, String.class));
-            paramList.add(ParamTool.getParam(shipmentBean.getDestination(), 3, String.class));
-            paramList.add(ParamTool.getParam(shipmentBean.getIs_arrived(), 4, Integer.class));
-            paramList.add(ParamTool.getParam(shipmentBean.getOrder_id(), 5, Long.class));
+            paramList.add(ParamTool.getParam(1, shipmentBean.getShipment_id(), Long.class));
+            paramList.add(ParamTool.getParam(2, shipmentBean.getOrigin(), String.class));
+            paramList.add(ParamTool.getParam(3, shipmentBean.getDestination(), String.class));
+            paramList.add(ParamTool.getParam(4, shipmentBean.getIs_arrived(), Integer.class));
+            paramList.add(ParamTool.getParam(5, new Date(), Date.class));
+            paramList.add(ParamTool.getParam(6, shipmentBean.getOrder_id(), Long.class));
             prepareStatement.setParamList(paramList);
 
             return prepareStatement;
-        }
-        return null;
-    }
-
-    private StatementBean getUpdateStatement(String name, String operationType, BaseBean baseBean){
-        StatementBean statementBean = new StatementBean();
-        if(baseBean instanceof OrderBean) {
-            OrderBean orderBean = (OrderBean) baseBean;
-            statementBean.setOperationType(operationType);
-            statementBean.setDataSourceName(TableConfig.getTableConfig(name).getDataSourceName());
-            StringBuffer sb = new StringBuffer();
-            sb.append("update enriched_orders set ");
-            //sb.append("order_date = ").append(orderBean.getOrder_date()).append(", ");
-            sb.append("customer_name = '").append(orderBean.getCustomer_name()).append("' ");
-            sb.append("where order_id=").append(orderBean.getOrder_id());
-            statementBean.setSql(sb.toString());
-            return statementBean;
-        } else if(baseBean instanceof ProductBean){
-            ProductBean productBean = (ProductBean)baseBean;
-            statementBean.setOperationType(operationType);
-            statementBean.setDataSourceName(TableConfig.getTableConfig(name).getDataSourceName());
-            StringBuffer sb = new StringBuffer();
-            sb.append("update enriched_orders set ");
-            sb.append("name = '").append(productBean.getName()).append("', ");
-            sb.append("description = '").append(productBean.getDescription()).append("' ");
-            sb.append("where product_id=").append(productBean.getId());
-            statementBean.setSql(sb.toString());
-            return statementBean;
         }
         return null;
     }

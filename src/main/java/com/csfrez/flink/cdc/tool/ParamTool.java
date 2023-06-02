@@ -23,7 +23,7 @@ public class ParamTool {
         return param;
     }
 
-    public static <T> PrepareStatementBean.Param<T> getParam(int index, Supplier<T> supplier, Class<T> clazz){
+    public static <T> PrepareStatementBean.Param<T> getParamSupplier(int index, Supplier<T> supplier, Class<T> clazz){
         PrepareStatementBean.Param<T> param = new PrepareStatementBean.Param<>();
         param.setIndex(index);
         if(supplier != null){
