@@ -1,6 +1,6 @@
 package com.csfrez.flink.cdc.debezium;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.ververica.cdc.debezium.DebeziumDeserializationSchema;
 import io.debezium.time.Timestamp;
 import lombok.extern.slf4j.Slf4j;
