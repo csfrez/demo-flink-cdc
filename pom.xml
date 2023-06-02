@@ -26,6 +26,7 @@
         <lombok.version>1.18.22</lombok.version>
         <druid.version>1.2.8</druid.version>
         <mysql-connector.version>8.0.27</mysql-connector.version>
+        <hadoop.version>3.0.0</hadoop.version>
 
     </properties>
 
@@ -92,6 +93,13 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql-connector.version}</version>
+        </dependency>
+
+        <!-- hadoop 依赖 包含了Gson库-->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop.version}</version>
         </dependency>
 
     </dependencies>

@@ -1,7 +1,5 @@
 package com.csfrez.flink.cdc.thread;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * @author yangzhi
  * @date 2021/11/20
