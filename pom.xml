@@ -64,17 +64,17 @@
         </dependency>
 
         <!-- cdc mysqlsource 依赖 -->
-        <!--<dependency>
-            <groupId>com.alibaba.ververica</groupId>
+        <dependency>
+            <groupId>com.ververica</groupId>
             <artifactId>flink-connector-mysql-cdc</artifactId>
             <version>${mysql-cdc.version}</version>
-        </dependency>-->
+        </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>com.ververica</groupId>
             <artifactId>flink-sql-connector-mysql-cdc</artifactId>
             <version>${mysql-cdc.version}</version>
-        </dependency>
+        </dependency>-->
 
         <!-- log4j日志相关坐标 -->
         <dependency>
