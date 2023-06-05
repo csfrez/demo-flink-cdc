@@ -74,7 +74,6 @@ public class DruidConfig {
             }
             initFlag = true;
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("initDruidConfig()", e);
         } finally {
             IOTool.close(in);

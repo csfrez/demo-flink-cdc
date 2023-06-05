@@ -74,7 +74,6 @@ public class SourceConfig {
             }
             initFlag = true;
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("initSourceConfig()", e);
         } finally {
             IOTool.close(in);

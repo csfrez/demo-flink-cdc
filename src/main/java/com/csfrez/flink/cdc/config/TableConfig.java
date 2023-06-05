@@ -49,7 +49,6 @@ public class TableConfig {
                 tableConfigMap.put(key, tableConfig);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("initTableConfig()", e);
         }
     }

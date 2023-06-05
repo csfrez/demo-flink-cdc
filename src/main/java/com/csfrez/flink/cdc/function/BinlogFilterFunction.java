@@ -23,7 +23,6 @@ public class BinlogFilterFunction implements FilterFunction<String> {
             }
             log.info("BinlogFilterFunction.filter={}", name + "不是配置的数据源表，不处理");
         } catch (Exception e){
-            e.printStackTrace();
             log.error("BinlogFilterFunction.filter", e);
         }
         return false;

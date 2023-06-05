@@ -60,7 +60,6 @@ public class MySqlSourceApplication {
             env.execute();
         } catch (Exception e){
             log.error("MySqlSourceApplication", e);
-            e.printStackTrace();
         }
 
     }

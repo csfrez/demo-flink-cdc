@@ -22,7 +22,6 @@ public class ProcessFactory {
         try{
             serviceMap.put("mydb.enriched_orders", new EnrichedOrdersProcessService());
         } catch (Exception e){
-            e.printStackTrace();
             log.error("init.ProcessFactory", e);
         }
     }

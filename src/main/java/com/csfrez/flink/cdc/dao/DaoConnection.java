@@ -30,7 +30,6 @@ public class DaoConnection {
             }
         } catch (SQLException e) {
             log.error("DaoConnection", e);
-            e.printStackTrace();
         }
         return null;
     }
@@ -47,7 +46,7 @@ public class DaoConnection {
             }
             System.out.println(customerName);
         } catch (SQLException e) {
-            e.printStackTrace();
+
         }
         System.out.println();
     }

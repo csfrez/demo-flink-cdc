@@ -49,7 +49,6 @@ public class BinlogFlatMapFunction implements FlatMapFunction<String, StatementB
                 log.info(name + "====》无法确定的操作类型");
             }
         } catch (Exception e){
-            e.printStackTrace();
             log.error("BinlogFlatMapFunction.flatMap", e);
         } finally {
             StringThreadLocal.remove();

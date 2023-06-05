@@ -29,11 +29,9 @@ public class CommonConfig {
     private static final String CONFIG_FILE = "common.properties";
     private static Properties properties = new Properties();
 
-    public static String specialProcDefKey;
+    public static String sinkOutDatasource;
 
-    public static String procDefKey;
-
-    private CommonConfig(){
+    private CommonConfig() {
 
     }
 
@@ -44,7 +42,6 @@ public class CommonConfig {
             properties.load(in);
             init();
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("CommonConfig()", e);
         } finally {
             IOTool.close(in);
@@ -54,29 +51,22 @@ public class CommonConfig {
     private static void init() throws Exception {
         Field[] fields = CommonConfig.class.getDeclaredFields();
         CommonConfig commonConfig = new CommonConfig();
-        for(Field field: fields){
+        for (Field field : fields) {
             String property = properties.getProperty(PREFIX + HumpTool.humpToLine(field.getName()));
-            if(StringUtils.isNotEmpty(property)){
-                log.info(PREFIX + field.getName()+"===>>" + property);
+            if (StringUtils.isNotEmpty(property)) {
+                log.info(PREFIX + field.getName() + "===>>" + property);
                 ReflectTool.setValueByFieldName(commonConfig, field, property);
             }
         }
     }
 
-    public static List<String> getSpecialProcDefKeyList(){
-        return Arrays.asList(specialProcDefKey.split(","));
+    public static List<String> getSinkOutDatasourceList() {
+        return Arrays.asList(sinkOutDatasource.split(","));
     }
-
-    public static List<String> getProcDefKeyList(){
-        return Arrays.asList(procDefKey.split(","));
-    }
-
 
 
     public static void main(String[] args) {
-        System.out.println(CommonConfig.getSpecialProcDefKeyList());
-        System.out.println(CommonConfig.getProcDefKeyList());
+        System.out.println(CommonConfig.getSinkOutDatasourceList());
     }
-
 
 }

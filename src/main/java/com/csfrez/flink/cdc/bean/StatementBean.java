@@ -25,6 +25,11 @@ public class StatementBean implements Serializable {
      */
     private String sql;
 
+    /**
+     * 删除语句
+     */
+    private String deleteSql;
+
     @Override
     public String toString() {
         return JSON.toJSONString(this);

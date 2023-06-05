@@ -31,7 +31,6 @@ public class ProductDao extends BaseDao{
             }
             return productBean;
         } catch (SQLException e) {
-            e.printStackTrace();
             log.error("getProductBeanById", e);
         } finally{
             IOTool.close(rs);
