@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <id>jar-with-dependencies</id>
+    <formats>
+        <format>jar</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <useProjectArtifact>true</useProjectArtifact>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <excludes>
+                <!-- 排除不要的依赖 -->
+                <!--<exclude>com.ververica:*</exclude>-->
+                <exclude>io.debezium:*</exclude>
+                <exclude>org.apache.flink:*</exclude>
+                <exclude>org.slf4j:*</exclude>
+                <exclude>org.apache.logging.log4j:*</exclude>
+                <exclude>com.alibaba.fastjson2:fastjson2</exclude>
+                <exclude>org.projectlombok:lombok</exclude>
+                <exclude>com.alibaba:druid</exclude>
+                <exclude>com.mysql:mysql-connector-j</exclude>
+                <exclude>org.antlr:*</exclude>
+                <exclude>com.fasterxml.jackson.core:*</exclude>
+                <exclude>com.fasterxml.jackson.datatype:*</exclude>
+                <exclude>com.google.guava:*</exclude>
+                <exclude>com.zendesk:*</exclude>
+                <exclude>com.zaxxer:*</exclude>
+                <exclude>com.ibm.icu:*</exclude>
+                <exclude>com.google.code.findbugs:*</exclude>
+                <exclude>org.apache.kafka:*</exclude>
+                <exclude>org.apache.commons:*</exclude>
+                <exclude>org.xerial.snappy:*</exclude>
+                <exclude>com.google.protobuf:*</exclude>
+                <exclude>org.javassist:*</exclude>
+                <exclude>com.twitter:*</exclude>
+                <exclude>commons-cli:*</exclude>
+                <exclude>commons-collections:*</exclude>
+                <exclude>commons-io:*</exclude>
+                <exclude>com.esotericsoftware.kryo:*</exclude>
+                <exclude>com.esotericsoftware.minlog:*</exclude>
+                <exclude>org.objenesis:*</exclude>
+                <exclude>org.lz4:*</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
+</assembly>

@@ -89,12 +89,10 @@ public class MySqlJdbcSink extends RichSinkFunction<StatementBean> {
                 return stmt.executeUpdate(value.getSql());
             }
         } catch (MySQLTransactionRollbackException e){
-            e.printStackTrace();
             log.error("MySqlJdbcSink.MySQLTransactionRollbackException", e);
             // 回滚返回错误码-1
             return -1;
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("MySqlJdbcSink.executeUpdate", e);
         } finally {
             IOTool.close(pstmt);
@@ -167,7 +165,6 @@ public class MySqlJdbcSink extends RichSinkFunction<StatementBean> {
             }
             return sql;
         } catch (Exception e){
-            e.printStackTrace();
             log.info("MySqlJdbcSink.replacePlaceholder", e);
         }
         return null;

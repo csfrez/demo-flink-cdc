@@ -35,3 +35,4 @@ build/
 lib
 lib-dev
 logs
+checkpoint

@@ -31,8 +31,9 @@ public class MySqlSourceApplication {
         try{
             StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
             ParameterTool parameterTool = ParameterTool.fromArgs(args);
-            String active = parameterTool.get("ddjf.profiles.active", "test");
-//            String checkpointDataUri = parameterTool.get("ddjf.profiles.stateBackend", "hdfs://10.11.0.96:8020/flinkcdc/checkpoint/" + active);
+            String active = parameterTool.get("csfrez.profiles.active", "test");
+//            String checkpointDataUri = parameterTool.get("csfrez.profiles.url", "hdfs://10.11.0.96:8020/flinkcdc/checkpoint/" + active);
+////            String checkpointDataUri = parameterTool.get("csfrez.profiles.url", "file:///D:/Github/csfrez/demo-flink-cdc/checkpoint/" + active);
 //            //设置访问 HDFS 的用户名
 //            System.setProperty("HADOOP_USER_NAME", "flink");
 //            //1.1 开启Checkpoint,每隔3分钟做一次CK
@@ -42,19 +43,23 @@ public class MySqlSourceApplication {
 //            //1.2 指定CK的一致性语义
 //            env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
 //            //1.3 设置任务关闭的时候保留最后一次CK数据
-//            env.getCheckpointConfig().enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
+//            //env.getCheckpointConfig().enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
+//            env.getCheckpointConfig().setExternalizedCheckpointCleanup(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
 //            //1.4 指定从CK自动重启策略
 //            //checkpoint超时时长 2分钟
 //            env.getCheckpointConfig().setCheckpointTimeout(120 * 1000L);
 //            //失败重检查点重启,延迟5s重启,重启3次
 //            env.setRestartStrategy(RestartStrategies.fixedDelayRestart(5, 10 * 1000L));
 //            //1.5 设置状态后端
-//            env.setStateBackend(new FsStateBackend(checkpointDataUri));
+//            //env.setStateBackend(new FsStateBackend(checkpointDataUri));
+//            env.setStateBackend(new HashMapStateBackend());
+//            env.getCheckpointConfig().setCheckpointStorage(checkpointDataUri);
 //            //1.6 设置checkpoint能够容忍的连续失败的次数 3次
 //            env.getCheckpointConfig().setTolerableCheckpointFailureNumber(3);
 
             // enable checkpoint
-            env.enableCheckpointing(3000);
+            env.enableCheckpointing(3*60*1000);
+
             // 加载数据源
             processSourceFunction(env, active);
             env.execute();
@@ -91,6 +96,7 @@ public class MySqlSourceApplication {
                     .startupOptions(StartupOptions.latest())
 //                    .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to String
                     .deserializer(new FastjonDeserializationSchema()) // converts SourceRecord to String
+//                    .serverId("223344")
 //                    .debeziumProperties(properties)
                     .build();
 
