@@ -1,7 +1,7 @@
 package com.csfrez.flink.cdc.config;
 
 
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.csfrez.flink.cdc.tool.HumpTool;
 import com.csfrez.flink.cdc.tool.IOTool;
 import com.csfrez.flink.cdc.tool.ReflectTool;

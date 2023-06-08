@@ -79,7 +79,7 @@ public class MySqlSourceApplication {
         List<String> tableList = TableConfig.getTableList();
         for(Map.Entry<String, SourceConfig> entry: sourceConfigMap.entrySet()) {
             SourceConfig sourceConfig = entry.getValue();
-            log.info("processSourceFunction.entry.getKey()={}, sourceConfig={}", entry.getKey(), sourceConfig);
+            log.info("processSourceFunction.entry.getKey()={}, sourceConfig={}, tableList={}", entry.getKey(), sourceConfig, tableList);
 //            Properties properties = new Properties();
 //            properties.setProperty("snapshot.mode", "schema_only");
             MySqlSource<String> mySqlSource = MySqlSource.<String>builder()
@@ -96,6 +96,7 @@ public class MySqlSourceApplication {
                     .startupOptions(StartupOptions.latest())
 //                    .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to String
                     .deserializer(new FastjonDeserializationSchema()) // converts SourceRecord to String
+//                    .scanNewlyAddedTableEnabled(true)
 //                    .serverId("223344")
 //                    .debeziumProperties(properties)
                     .build();

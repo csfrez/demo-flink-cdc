@@ -1,6 +1,6 @@
 package com.csfrez.flink.cdc.function;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.csfrez.flink.cdc.bean.BinlogBean;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.util.Collector;

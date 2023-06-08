@@ -13,7 +13,7 @@ public class BinlogFilterFunction implements FilterFunction<String> {
     @Override
     public boolean filter(String value) throws Exception {
         try{
-            //log.info(value);
+            log.info("BinlogFilterFunction.value={}", value);
             BinlogBean binlogBean = BinlogBean.builder(value);
             BinlogBean.Source source = binlogBean.getSource();
             String name = source.getDb() + "." + source.getTable();

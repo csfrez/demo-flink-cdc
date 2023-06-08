@@ -1,8 +1,10 @@
 package com.csfrez.flink.cdc.bean;
 
 
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * @author yangzhi
@@ -10,7 +12,8 @@ import lombok.Data;
  * @email csfrez@163.com
  */
 @Data
-public class BinlogBean {
+public class BinlogBean implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private JSONObject before;
 
@@ -38,6 +41,12 @@ public class BinlogBean {
         private String table;
 
         private Long ts_ms;
+
+        private Integer pos;
+
+        private Integer row;
+
+        private String file;
 
     }
 

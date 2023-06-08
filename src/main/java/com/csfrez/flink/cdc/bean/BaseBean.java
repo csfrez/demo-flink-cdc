@@ -1,7 +1,8 @@
 package com.csfrez.flink.cdc.bean;
 
 
-import com.alibaba.fastjson2.JSONObject;
+
+import com.alibaba.fastjson.JSONObject;
 
 import java.io.Serializable;
 
